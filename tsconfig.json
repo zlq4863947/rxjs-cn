@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "strictFunctionTypes": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "moduleResolution": "node",
+    "stripInternal": false,
+    "noEmit": true,
+    "lib": [
+      "es5",
+      "es2018",
+      "dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "rxjs": ["./src/index"],
+      "rxjs/operators": ["./src/operators/index"],
+      "rxjs/testing": ["./src/testing/index"],
+      "rxjs/ajax": ["./src/ajax/index"],
+      "rxjs/webSocket": ["./src/webSocket/index"],
+      "rxjs/fetch": ["./src/fetch/index"],
+      "rxjs/internal/*": ["./src/internal/*"]
+    }
+  },
+  "bazelOptions": {
+    "suppressTsconfigOverrideWarnings": true
+  }
+}

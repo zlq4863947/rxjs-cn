@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["es2015", "dom"],
+    "module": "commonjs",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "paths": {
+      "rxjs": ["../dist/types"],
+      "rxjs/operators": ["../dist/types/operators"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2015"
+  }
+}
