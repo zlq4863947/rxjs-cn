@@ -5,6 +5,7 @@
 *.sublime-workspace
 .settings
 .vscode
+.history
 
 # Installed libs
 node_modules/

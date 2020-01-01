@@ -1,15 +1,16 @@
-# Scheduler
+# 调度器(Scheduler)
 
-**What is a Scheduler?** A scheduler controls when a subscription starts and when notifications are delivered. It consists of three components.
+**调度器是什么?** 调度器控制着何时启动订阅以及何时发送通知。它由三个部分组成。
 
-- **A Scheduler is a data structure.** It knows how to store and queue tasks based on priority or other criteria.
-- **A Scheduler is an execution context.** It denotes where and when the task is executed (e.g. immediately, or in another callback mechanism such as setTimeout or process.nextTick, or the animation frame).
-- **A Scheduler has a (virtual) clock.** It provides a notion of "time" by a getter method `now()` on the scheduler. Tasks being scheduled on a particular scheduler will adhere only to the time denoted by that clock.
+- **调度器是一种数据结构** 它知道如何根据优先级或其他条件进行存储和排序任务。
+- **调度器是一个执行上下文。** 它表示执行任务的时间、地点（如：立即执行或在其他回调函数中执行，例如setTimeout或process.nextTick或动画帧中）。
+- **调度器具有（虚拟）时钟。** 它通过调度器的getter方法`now()`提供"时间"的概念。在特定的调度器上调度的任务将仅遵守该时钟指示的时间。
 
-<span class="informal">A Scheduler lets you define in what execution context will an Observable deliver notifications to its Observer.</span>
+<span class="informal">调度器使您可以定义可观察对象将在哪些执行上下文中向其观察者传递通知。</span>
 
-In the example below, we take the usual simple Observable that emits values `1`, `2`, `3` synchronously, and use the operator `observeOn` to specify the `async` scheduler to use for delivering those values.
+在下面的示例中，我们采用普通的可观察对象来同步发出值`1`、`2`、`3`，并使用操作符`observeOn`指定用于传递这些值的`async`调度器。
 
+[在Stackblitz上查看](https://stackblitz.com/edit/typescript-jbhzfe)
 ```ts
 import { Observable, asyncScheduler } from 'rxjs';
 import { observeOn } from 'rxjs/operators';
@@ -23,33 +24,35 @@ const observable = new Observable((observer) => {
   observeOn(asyncScheduler)
 );
 
-console.log('just before subscribe');
+console.log('订阅之前');
 observable.subscribe({
   next(x) {
-    console.log('got value ' + x)
+    console.log('获得值：' + x)
   },
   error(err) {
-    console.error('something wrong occurred: ' + err);
+    console.error('发生错误：' + err);
   },
   complete() {
-     console.log('done');
+     console.log('完成');
   }
 });
-console.log('just after subscribe');
+console.log('订阅之后');
 ```
 
-Which executes with the output:
+输出结果：
 
 ```none
-just before subscribe
-just after subscribe
-got value 1
-got value 2
-got value 3
-done
+订阅之前
+订阅之后
+获得值： 1
+获得值： 2
+获得值： 3
+完成
 ```
 
-Notice how the notifications `got value...` were delivered after `just after subscribe`, which is different to the default behavior we have seen so far. This is because `observeOn(asyncScheduler)` introduces a proxy Observer between `new Observable` and the final Observer. Let's rename some identifiers to make that distinction obvious in the example code:
+请注意，通知`获得值：...`是在`订阅之后`之后才发送，这与到目前为止我们看到的默认行为不同。这是因为`observeOn(asyncScheduler)`在新的可观察对象和最终的观察者之间引入了代理观察者。
+
+让我们重命名一些标识符，以使该区别在示例代码中显而易见：
 
 ```ts
 import { Observable, asyncScheduler } from 'rxjs';
@@ -66,30 +69,30 @@ var observable = new Observable((proxyObserver) => {
 
 var finalObserver = {
   next(x) {
-    console.log('got value ' + x)
+    console.log('获得值：' + x)
   },
   error(err) {
-    console.error('something wrong occurred: ' + err);
+    console.error('发生错误：' + err);
   },
   complete() {
-     console.log('done');
+     console.log('完成');
   }
 };
 
-console.log('just before subscribe');
+console.log('订阅之前');
 observable.subscribe(finalObserver);
-console.log('just after subscribe');
+console.log('订阅之后');
 ```
 
-The `proxyObserver` is created in `observeOn(asyncScheduler)`, and its `next(val)` function is approximately the following:
+`proxyObserver`是在`observeOn(asyncScheduler)`中创建的，其`next(val)`函数大致如下：
 
 ```ts
 const proxyObserver = {
   next(val) {
     asyncScheduler.schedule(
       (x) => finalObserver.next(x),
-      0 /* delay */,
-      val /* will be the x for the function above */
+      0 /* 延迟时间 */,
+      val /* 将为上面函数的x */
     );
   },
 
@@ -97,30 +100,30 @@ const proxyObserver = {
 }
 ```
 
-The `async` Scheduler operates with a `setTimeout` or `setInterval`, even if the given `delay` was zero. As usual, in JavaScript, `setTimeout(fn, 0)` is known to run the function `fn` earliest on the next event loop iteration. This explains why `got value 1` is delivered to the `finalObserver` after `just after subscribe` happened.
+即使指定的`delay`为0，异步调度器也可以使用`setTimeout`或`setInterval`进行操作。像往常一样，在JavaScript中，已知`setTimeout(fn, 0)` 最早在下一次事件循环迭代时运行函数fn。这解释了为什么在`订阅之后`将值`1`传递给`finalObserver`的原因。
 
-The `schedule()` method of a Scheduler takes a `delay` argument, which refers to a quantity of time relative to the Scheduler's own internal clock. A Scheduler's clock need not have any relation to the actual wall-clock time. This is how temporal operators like `delay` operate not on actual time, but on time dictated by the Scheduler's clock. This is specially useful in testing, where a *virtual time Scheduler* may be used to fake wall-clock time while in reality executing scheduled tasks synchronously.
+调度器的`schedule()`方法采用`delay`参数，它是指相对于调度器自己的内部时钟的时间单位。调度器的时钟与实际的时间没有任何关系。这就是像`delay` 时间操作符，它不是在实际时间上运行，而是在调度器的时钟所指定的时间上运行。这在测试中特别有用，在测试中，虚拟时间调度器可用于伪造时间，而实际上却是同步执行调度的任务。
 
-## Scheduler Types
+## 调度器类型
 
-The `async` Scheduler is one of the built-in schedulers provided by RxJS. Each of these can be created and returned by using static properties of the `Scheduler` object.
+`async` 调度器是RxJS提供的内置调度器之一。 可以使用`Scheduler`对象的静态属性创建并返回每种类型的调度器。
 
-| Scheduler | Purpose |
+| 调度器 | 用途 |
 | --- | --- |
-| `null` | By not passing any scheduler, notifications are delivered synchronously and recursively. Use this for constant-time operations or tail recursive operations. |
-| `queueScheduler` | Schedules on a queue in the current event frame (trampoline scheduler). Use this for iteration operations. |
-| `asapScheduler` | Schedules on the micro task queue, which is the same queue used for promises. Basically after the current job, but before the next job. Use this for asynchronous conversions. |
-| `asyncScheduler` | Schedules work with `setInterval`. Use this for time-based operations. |
-| `animationFrameScheduler` | Schedules task  that will happen just before next browser content repaint. Can be used to create smooth browser animations.|
+| `null` | 通过不传递任何调度器，可以同步和递归传递通知。 将此用于定时操作或尾递归操作。 |
+| `queueScheduler` | 当前事件帧中的队列上进行调度(蹦床调度器)。用于迭代操作。 |
+| `asapScheduler` | 微任务的队列调度，与`promises`的队列相同。基本上在当前工作之后，但是在下一个工作之前。使用它进行异步转换。 |
+| `asyncScheduler` | 使用`setInterval`调度，用于基于时间的操作。 |
+| `animationFrameScheduler` | 调度计划将在下一次浏览器内容重新绘制之前发生的任务。可用于创建流畅的浏览器动画。|
 
 
-## Using Schedulers
+## 使用调度器
 
-You may have already used schedulers in your RxJS code without explicitly stating the type of schedulers to be used. This is because all Observable operators that deal with concurrency have optional schedulers. If you do not provide the scheduler, RxJS will pick a default scheduler by using the principle of least concurrency. This means that the scheduler which introduces the least amount of concurrency that satisfies the needs of the operator is chosen. For example, for operators returning an observable with a finite and small number of messages, RxJS uses no Scheduler, i.e. `null` or `undefined`.  For operators returning a potentially large or infinite number of messages, `queue` Scheduler is used. For operators which use timers, `async` is used.
+您可能已经在RxJS代码中使用了调度器，而没有明确指定要使用的调度器类型。这是因为所有处理并发性的可观察对象操作符都有可选的调度器。如果不指定调度程序，则RxJS将按最小并发原则选择默认调度器。这意味着将选择调度程序，该调度器将引入最少的并发量以满足操作符的需求。例如，对于返回有限且少量消息的可观察对象的操作符，RxJS不使用Scheduler，即`null`或`undefined`。对于返回大量或无限数量消息的操作符，使用`queueScheduler`。对于使用计时器的操作符，将使用`asyncScheduler`。
 
-Because RxJS uses the least concurrency scheduler, you can pick a different scheduler if you want to introduce concurrency for performance purpose.  To specify a particular scheduler, you can use those operator methods that take a scheduler, e.g., `from([10, 20, 30], asyncScheduler)`.
+由于RxJS使用最少的并发调度器，因此如果您出于性能目的引入并发，则可以选择其他调度器。要指定特定的调度器，您可以使用采用此调度器的操作符方法，例如，`from([10, 20, 30], asyncScheduler)`。
 
-**Static creation operators usually take a Scheduler as argument.** For instance, `from(array, scheduler)` lets you specify the Scheduler to use when delivering each notification converted from the `array`. It is usually the last argument to the operator. The following static creation operators take a Scheduler argument:
+**静态创建操作符通常将调度器作为参数。** 例如： `from(array, scheduler)` 让您指定在传递从 `array` 转换的每个通知时要使用的调度器。它通常是操作符的最后一个参数。以下静态创建运算符都会传递一个调度器参数：
 
 - `bindCallback`
 - `bindNodeCallback`
@@ -136,14 +139,14 @@ Because RxJS uses the least concurrency scheduler, you can pick a different sche
 - `throw`
 - `timer`
 
-**Use `subscribeOn` to schedule in what context will the `subscribe()` call happen.** By default, a `subscribe()` call on an Observable will happen synchronously and immediately. However, you may delay or schedule the actual subscription to happen on a given Scheduler, using the instance operator `subscribeOn(scheduler)`, where `scheduler` is an argument you provide.
+**使用`subscribeOn`用来指定在什么上下文中调用`subscribe()`。** 默认情况下，对可观察对象的`subscribe()`调用将立即同步执行。您可以延迟或日程安排在指定调度器上发生的实际订阅，使用实例操作符 `subscribeOn(scheduler)`，其中`scheduler`是您要提供的参数。
 
-**Use `observeOn` to schedule in what context will notifications be delivered.** As we saw in the examples above, instance operator `observeOn(scheduler)` introduces a mediator Observer between the source Observable and the destination Observer, where the mediator schedules calls to the destination Observer using your given `scheduler`.
+**使用`observeOn`来调度发送通知的的上下文。** 正如我们在上面的例子中看到的，实例操作符`observeOn(scheduler)`在源可观测者和目标可观测者之间引入了一个中介观察者，中介观察者使用指定的`scheduler`调度对目标观察者的调用。
 
-**Instance operators may take a Scheduler as argument.**
+**实例运算符可以将调度器作为参数传递。**
 
-Time-related operators like `bufferTime`, `debounceTime`, `delay`, `auditTime`, `sampleTime`, `throttleTime`, `timeInterval`, `timeout`, `timeoutWith`, `windowTime` all take a Scheduler as the last argument, and otherwise operate by default on the `asyncScheduler`.
+与时间相关的操作符，例如：`bufferTime`、`debounceTime`、`delay`、`auditTime`、`sampleTime`、`throttleTime`、`timeInterval`、`timeout`、`timeoutWith`、`windowTime` 等，都将调度器作为最后一个参数，当不传递调度器时，默认使用`asyncScheduler`。
 
-Other instance operators that take a Scheduler as argument: `cache`, `combineLatest`, `concat`, `expand`, `merge`, `publishReplay`, `startWith`.
+其他以调度器为参数的实例运算符：`cache`、`combineLatest`、`concat`、`expand`、`merge`、`publishReplay`、`startWith`。
 
-Notice that both `cache` and `publishReplay` accept a Scheduler because they utilize a ReplaySubject. The constructor of a ReplaySubjects takes an optional Scheduler as the last argument because ReplaySubject may deal with time, which only makes sense in the context of a Scheduler. By default, a ReplaySubject uses the `queue` Scheduler to provide a clock.
+注意，`cache`和`publishReplay`都接受调度器，因为它们使用`ReplaySubject`。`ReplaySubjecs`的构造函数将可选的调度器作为最后一个参数，因为`ReplaySubject`可能处理时间，这只在调度器的上下文中才有意义。默认情况下，`ReplaySubject`使用`queueScheduler`提供时钟。

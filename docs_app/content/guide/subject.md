@@ -1,16 +1,16 @@
-# Subject
+# 主题(Subject)
 
-**What is a Subject?** An RxJS Subject is a special type of Observable that allows values to be multicasted to many Observers. While plain Observables are unicast (each subscribed Observer owns an independent execution of the Observable), Subjects are multicast.
+**主题是什么?** RxJS的主题是一种特殊的可观察对象类型，它允许将值多播到多个观察者(Observer)。普通的可观察对象是单播的（每个订阅的观察者拥有可观察对象的独立执行），而主题是多播的。
 
-<span class="informal">A Subject is like an Observable, but can multicast to many Observers. Subjects are like EventEmitters: they maintain a registry of many listeners.</span>
+<span class="informal">主题类似于可观察对象，但可以多播到多个观察者。主题类似于EventEmitters：它维护着多个侦听器的注册表。</span>
 
-**Every Subject is an Observable.** Given a Subject, you can `subscribe` to it, providing an Observer, which will start receiving values normally. From the perspective of the Observer, it cannot tell whether the Observable execution is coming from a plain unicast Observable or a Subject.
+**每个主题都是一个可观察对象。** 指定一个主题，您可以订阅它，提供一个观察者，它将开始正常接收值。 从观察者的角度来看，它无法确定可观察对象的执行是来自纯单播可观察对象还是主题。
 
-Internally to the Subject, `subscribe` does not invoke a new execution that delivers values. It simply registers the given Observer in a list of Observers, similarly to how `addListener` usually works in other libraries and languages.
+在主题内部，`subscribe`不会调用传递值的新执行。它只是在观察者列表中注册一个观察者，类似于`addListener`在其他库和语言中的工作方式。
 
-**Every Subject is an Observer.** It is an object with the methods `next(v)`, `error(e)`, and `complete()`. To feed a new value to the Subject, just call `next(theValue)`, and it will be multicasted to the Observers registered to listen to the Subject.
+**每个主题都是一个观察者。** 它是一个具有`next(v)`, `error(e)`, and `complete()`方法的对象。若要将新值传递送给主题，只需调用`next(theValue)`，它将被多播给注册收听此主题的观察者。
 
-In the example below, we have two Observers attached to a Subject, and we feed some values to the Subject:
+在下面的示例中，我们将两个观察者附加到一个主题中，并向该主题提供一些值：
 
 ```ts
 import { Subject } from 'rxjs';
@@ -27,14 +27,14 @@ subject.subscribe({
 subject.next(1);
 subject.next(2);
 
-// Logs:
+// 日志:
 // observerA: 1
 // observerB: 1
 // observerA: 2
 // observerB: 2
 ```
 
-Since a Subject is an Observer, this also means you may provide a Subject as the argument to the `subscribe` of any Observable, like the example below shows:
+由于主题是观察者，这也意味着您可以提供一个主题作为任何可观察对象`subscribe`的参数，如下例所示：
 
 ```ts
 import { Subject, from } from 'rxjs';
@@ -50,9 +50,9 @@ subject.subscribe({
 
 const observable = from([1, 2, 3]);
 
-observable.subscribe(subject); // You can subscribe providing a Subject
+observable.subscribe(subject); // 您可以订阅并传递一个主题
 
-// Logs:
+// 日志:
 // observerA: 1
 // observerB: 1
 // observerA: 2
@@ -61,17 +61,19 @@ observable.subscribe(subject); // You can subscribe providing a Subject
 // observerB: 3
 ```
 
-With the approach above, we essentially just converted a unicast Observable execution to multicast, through the Subject. This demonstrates how Subjects are the only way of making any Observable execution be shared to multiple Observers.
+通过上面的方法，我们基本上只是通过主题将单播可观察对象的执行转换为多播。这说明了主题是如何将任意可观察对象的执行共享给多个观察者的唯一方式。
 
-There are also a few specializations of the `Subject` type: `BehaviorSubject`, `ReplaySubject`, and `AsyncSubject`.
+还有一些特殊的主题：`BehaviorSubject`, `ReplaySubject`, 和 `AsyncSubject`。
 
-## Multicasted Observables
+## 多播的可观察对象
 
-A "multicasted Observable" passes notifications through a Subject which may have many subscribers, whereas a plain "unicast Observable" only sends notifications to a single Observer.
+"多播可观察对象"通过可能有许多订阅的主题来传递通知，而普通的"单播可观察对象"则，仅能将通知发送给单个观察者。
 
-<span class="informal">A multicasted Observable uses a Subject under the hood to make multiple Observers see the same Observable execution.</span>
+<span class="informal">一个多播的可观察对象在底层，使用Subject来使多个观察者看到相同的可观察对象的执行。</span>
 
-Under the hood, this is how the `multicast` operator works: Observers subscribe to an underlying Subject, and the Subject subscribes to the source Observable. The following example is similar to the previous example which used `observable.subscribe(subject)`:
+在底层，这就是`multicast`操作符的工作方式：观察者订阅基础的主题，而主题订阅原始的可观察对象。
+
+以下示例与使用`observable.subscribe(subject)`的先前示例相似：
 
 ```ts
 import { from, Subject } from 'rxjs';
@@ -81,7 +83,7 @@ const source = from([1, 2, 3]);
 const subject = new Subject();
 const multicasted = source.pipe(multicast(subject));
 
-// These are, under the hood, `subject.subscribe({...})`:
+// 在底层使用 `subject.subscribe({...})`:
 multicasted.subscribe({
   next: (v) => console.log(`observerA: ${v}`)
 });
@@ -89,32 +91,32 @@ multicasted.subscribe({
   next: (v) => console.log(`observerB: ${v}`)
 });
 
-// This is, under the hood, `source.subscribe(subject)`:
+// 在底层使用了 `source.subscribe(subject)`:
 multicasted.connect();
 ```
 
-`multicast` returns an Observable that looks like a normal Observable, but works like a Subject when it comes to subscribing. `multicast` returns a `ConnectableObservable`, which is simply an Observable with the `connect()` method.
+`multicast` 返回的可观察对象看起来像普通的可观察对象，但是在订阅时却像Subject一样工作。`multicast` 返回一个 `ConnectableObservable`，通过`connect()`方法返回一个可观察对象。
 
-The `connect()` method is important to determine exactly when the shared Observable execution  will start. Because `connect()` does `source.subscribe(subject)` under the hood, `connect()` returns a Subscription, which you can unsubscribe from in order to cancel the shared Observable execution.
+`connect()` 方法对于准确确定共享可观察对象的执行何时开始非常重要。 因为 `connect()` 在底层执行`source.subscribe(subject)`，所以`connect()`返回一个Subscription，您可以取消订阅以取消共享的可观察对象的执行。
 
-### Reference counting
+### 引用计数
 
-Calling `connect()` manually and handling the Subscription is often cumbersome. Usually, we want to *automatically* connect when the first Observer arrives, and automatically cancel the shared execution when the last Observer unsubscribes.
+手动调用`connect()`并处理订阅非常麻烦。通常，我们希望在第一个观察者到达时自动连接，并在最后一个观察者取消订阅时自动取消共享执行。
 
-Consider the following example where subscriptions occur as outlined by this list:
+请考虑以下示例，该列表概述了其中发生订阅的情况：
 
-1. First Observer subscribes to the multicasted Observable
-2. **The multicasted Observable is connected**
-3. The `next` value `0` is delivered to the first Observer
-4. Second Observer subscribes to the multicasted Observable
-5. The `next` value `1` is delivered to the first Observer
-5. The `next` value `1` is delivered to the second Observer
-1. First Observer unsubscribes from the multicasted Observable
-5. The `next` value `2` is delivered to the second Observer
-1. Second Observer unsubscribes from the multicasted Observable
-1. **The connection to the multicasted Observable is unsubscribed**
+1. 第一个观察者订阅多播的可观察对象
+2. **多播的可观察对象已连接**
+3. `next` 的值 `0` 被传递给第一个观察者
+4. 第而个观察者订阅多播的可观察对象
+5. `next` 的值 `1` 被传递给第一个观察者
+5. `next` 的值 `1` 被传递给第二个观察者
+1. 第一个观察者从多播的可观察对象取消订阅
+5. `next` 的值 `2` 被传递给第二个观察者
+1. 第二个观察者从多播的可观察对象取消订阅
+1. **与多播的可观察对象的连接已取消订阅**
 
-To achieve that with explicit calls to `connect()`, we write the following code:
+为了通过显式调用`connect()`实现这一点，我们编写以下代码：
 
 ```ts
 import { interval, Subject } from 'rxjs';
@@ -128,8 +130,8 @@ let subscription1, subscription2, subscriptionConnect;
 subscription1 = multicasted.subscribe({
   next: (v) => console.log(`observerA: ${v}`)
 });
-// We should call `connect()` here, because the first
-// subscriber to `multicasted` is interested in consuming values
+// 这里我们应该调用 `connect()`，以使 `multicasted` 的第一个
+// 订阅者输出`multicasted` 的值
 subscriptionConnect = multicasted.connect();
 
 setTimeout(() => {
@@ -142,19 +144,19 @@ setTimeout(() => {
   subscription1.unsubscribe();
 }, 1200);
 
-// We should unsubscribe the shared Observable execution here,
-// because `multicasted` would have no more subscribers after this
+// 我们在此处取消订阅共享的观察者对象的执行，
+// 因此 `multicasted` 将不再有任何订阅者
 setTimeout(() => {
   subscription2.unsubscribe();
-  subscriptionConnect.unsubscribe(); // for the shared Observable execution
+  subscriptionConnect.unsubscribe(); // 取消订阅共享的观察者对象的执行
 }, 2000);
 ```
 
-If we wish to avoid explicit calls to `connect()`, we can use ConnectableObservable's `refCount()` method (reference counting), which returns an Observable that keeps track of how many subscribers it has. When the number of subscribers increases from `0` to `1`, it will call `connect()` for us, which starts the shared execution. Only when the number of subscribers decreases from `1` to `0` will it be fully unsubscribed, stopping further execution.
+如果我们希望避免显式调用`connect()`，则可以使用ConnectableObservable的`refCount()`方法（引用计数），该方法返回一个可观察对象，以跟踪其拥有的订阅者数量。当订阅者数量从0增加到1时，它将为我们调用`connect()`，这将启动共享执行。只有当订阅者数量从1减少到0时，它才会完全取消订阅，从而停止进一步执行。
 
-<span class="informal">`refCount` makes the multicasted Observable automatically start executing when the first subscriber arrives, and stop executing when the last subscriber leaves.</span>
+<span class="informal">`refCount`使多播的可观察对象在第一个订阅者到来时自动开始执行，并在最后一个订阅者离开时停止执行。</span>
 
-Below is an example:
+下面是一个例子:
 
 ```ts
 import { interval, Subject } from 'rxjs';
@@ -165,8 +167,8 @@ const subject = new Subject();
 const refCounted = source.pipe(multicast(subject), refCount());
 let subscription1, subscription2;
 
-// This calls `connect()`, because
-// it is the first subscriber to `refCounted`
+// 这里其实调用了 `connect()`，
+// 因为 `refCounted` 有了第一个订阅者
 console.log('observerA subscribed');
 subscription1 = refCounted.subscribe({
   next: (v) => console.log(`observerA: ${v}`)
@@ -184,14 +186,14 @@ setTimeout(() => {
   subscription1.unsubscribe();
 }, 1200);
 
-// This is when the shared Observable execution will stop, because
-// `refCounted` would have no more subscribers after this
+// 这里共享的可观察对象的执行将会停止，
+// `refCounted` 将不再有订阅者
 setTimeout(() => {
   console.log('observerB unsubscribed');
   subscription2.unsubscribe();
 }, 2000);
 
-// Logs
+// 结果
 // observerA subscribed
 // observerA: 0
 // observerB subscribed
@@ -202,19 +204,19 @@ setTimeout(() => {
 // observerB unsubscribed
 ```
 
-The `refCount()` method only exists on ConnectableObservable, and it returns an `Observable`, not another ConnectableObservable.
+`refCount()`方法仅存在于ConnectableObservable上，它返回一个Observable，而不是另一个ConnectableObservable。
 
 ## BehaviorSubject
 
-One of the variants of Subjects is the `BehaviorSubject`, which has a notion of "the current value". It stores the latest value emitted to its consumers, and whenever a new Observer subscribes, it will immediately receive the "current value" from the `BehaviorSubject`.
+`BehaviorSubject`是主题的一种变体，它的概念是"当前值"。它存储了发给订阅者的最新值，并且每当有新的观察者订阅时，它将立即从`BehaviorSubject`接收"当前值"。
 
-<span class="informal">BehaviorSubjects are useful for representing "values over time". For instance, an event stream of birthdays is a Subject, but the stream of a person's age would be a BehaviorSubject.</span>
+<span class="informal">BehaviorSubjects用于表示"随时间变化的值"。 例如，生日的事件流是一个`Subject`，但对于年龄的事件流是一个`BehaviorSubject`。</span>
 
-In the following example, the BehaviorSubject is initialized with the value `0` which the first Observer receives when it subscribes. The second Observer receives the value `2` even though it subscribed after the value `2` was sent.
+在以下示例中，将`BehaviorSubject`初始化为第一个可观察对象订阅时收到的值：`0`。 第二个观察者在发送值：`2`之后进行了订阅，此时会收到值最新值：`2`。
 
 ```ts
 import { BehaviorSubject } from 'rxjs';
-const subject = new BehaviorSubject(0); // 0 is the initial value
+const subject = new BehaviorSubject(0); // 0 为初始值
 
 subject.subscribe({
   next: (v) => console.log(`observerA: ${v}`)
@@ -229,7 +231,7 @@ subject.subscribe({
 
 subject.next(3);
 
-// Logs
+// 结果
 // observerA: 0
 // observerA: 1
 // observerA: 2
@@ -240,15 +242,15 @@ subject.next(3);
 
 ## ReplaySubject
 
-A `ReplaySubject` is similar to a `BehaviorSubject` in that it can send old values to new subscribers, but it can also *record* a part of the Observable execution.
+`ReplaySubject`与`BehaviorSubject`相似，因为它可以将旧值发送给新订阅者，但是它也可以记录可观察对象执行的一部分。
 
-<span class="informal">A `ReplaySubject` records multiple values from the Observable execution and replays them to new subscribers.</span>
+<span class="informal">一个`ReplaySubject`记录来自可观察对象执行的多个值，并将它们重播给新的订阅者。</span>
 
-When creating a `ReplaySubject`, you can specify how many values to replay:
+创建`ReplaySubject`时，您可以指定要重播多少个值：
 
 ```ts
 import { ReplaySubject } from 'rxjs';
-const subject = new ReplaySubject(3); // buffer 3 values for new subscribers
+const subject = new ReplaySubject(3); // 为新订阅者缓冲3个值
 
 subject.subscribe({
   next: (v) => console.log(`observerA: ${v}`)
@@ -265,7 +267,7 @@ subject.subscribe({
 
 subject.next(5);
 
-// Logs:
+// 结果:
 // observerA: 1
 // observerA: 2
 // observerA: 3
@@ -277,12 +279,12 @@ subject.next(5);
 // observerB: 5
 ```
 
-You can also specify a *window time* in milliseconds, besides of the buffer size, to determine how old the recorded values can be. In the following example we use a large buffer size of `100`, but a window time parameter of just `500` milliseconds.
+除了缓冲数量以外，您还可以指定*窗口时间（以毫秒为单位）* ，以确定记录的值可以使用多长时间。 在下面的示例中，我们使用较大的缓冲区数量：100，但窗口时间参数仅为500毫秒。
 
 <!-- skip-example -->
 ```ts
 import { ReplaySubject } from 'rxjs';
-const subject = new ReplaySubject(100, 500 /* windowTime */);
+const subject = new ReplaySubject(100, 500 /* 窗口时间 */);
 
 subject.subscribe({
   next: (v) => console.log(`observerA: ${v}`)
@@ -297,7 +299,7 @@ setTimeout(() => {
   });
 }, 1000);
 
-// Logs
+// 结果
 // observerA: 1
 // observerA: 2
 // observerA: 3
@@ -313,7 +315,7 @@ setTimeout(() => {
 
 ## AsyncSubject
 
-The AsyncSubject is a variant where only the last value of the Observable execution is sent to its observers, and only when the execution completes.
+`AsyncSubject`是主题的另一个变体，其中只将可观察对象执行的最后一个值发送到其观察者，并且仅在执行`complete`时发送。
 
 ```js
 import { AsyncSubject } from 'rxjs';
@@ -335,9 +337,9 @@ subject.subscribe({
 subject.next(5);
 subject.complete();
 
-// Logs:
+// 结果:
 // observerA: 5
 // observerB: 5
 ```
 
-The AsyncSubject is similar to the [`last()`](/api/operators/last) operator, in that it waits for the `complete` notification in order to deliver a single value.
+AsyncSubject与[`last()`](/api/operators/last)操作符相似，他们都是等待`complete`通知后，发送一个值。

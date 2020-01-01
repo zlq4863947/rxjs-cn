@@ -49,18 +49,16 @@ table {
           display: inline-block;
         }
       }
-
     }
 
     td {
-      letter-spacing: 0.30px;
+      letter-spacing: 0.3px;
 
-    tr td:first-child {
-      @media (max-width: 480px) {
-        background-color: $lightgray;
+      tr td:first-child {
+        @media (max-width: 480px) {
+          background-color: $lightgray;
+        }
       }
-    }
-
     }
 
     th {
@@ -81,15 +79,19 @@ table {
 }
 
 #cheatsheet {
-
   table tbody td {
     overflow: auto;
   }
 
   @media only screen and (max-width: 990px) {
-
     /* Force table to not be like tables anymore */
-    table, thead, tbody, tfoot, tr, th, td {
+    table,
+    thead,
+    tbody,
+    tfoot,
+    tr,
+    th,
+    td {
       display: block;
       position: relative;
       max-width: 100%;
@@ -104,7 +106,8 @@ table {
       border-right: none;
     }
 
-    th, td {
+    th,
+    td {
       &:not(:last-child) {
         border-bottom: none;
         padding-bottom: 0px;
