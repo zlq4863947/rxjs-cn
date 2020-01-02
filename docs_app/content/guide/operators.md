@@ -278,7 +278,6 @@ const fileObservable = urlObservable.pipe(
 
 ### 使用 `pipe()` 函数创建新的操作符
 
-If there is a commonly used sequence of operators in your code, use the `pipe()` function to extract the sequence into a new operator. Even if a sequence is not that common, breaking it out into a single operator can improve readability.
 如果您的代码中有一个常用的操作符序列，请使用`pipe()` 函数将该序列提取到新的操作符中。就算此序列不常用，也可以将其分解为单个操作符，以提高可读性。
 
 例如，您可以创建一个函数，将奇数值过滤掉，并将偶数值加倍，如下所示：
