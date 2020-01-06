@@ -48,7 +48,7 @@ it('should support Boolean as a predicate', () => {
 // I've not been able to effect a failing dtslint test for this situation and a
 // conventional test won't fail because the TypeScript configuration isn't
 // sufficiently strict:
-// https://github.com/ReactiveX/rxjs/issues/4959#issuecomment-520629091
+// https://github.com/zlq4863947/rxjs-cn//issues/4959#issuecomment-520629091
 it('should support inference from a return type with Boolean as a predicate', () => {
   interface I {
     a: string | null;

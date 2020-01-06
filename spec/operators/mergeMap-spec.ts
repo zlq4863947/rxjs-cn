@@ -748,7 +748,7 @@ describe('mergeMap', () => {
   it('should support nested merges', (done: MochaDone) => {
 
     // Added as a failing test when investigating:
-    // https://github.com/ReactiveX/rxjs/issues/4071
+    // https://github.com/zlq4863947/rxjs-cn//issues/4071
 
     const results: (number | string)[] = [];
 
@@ -775,7 +775,7 @@ describe('mergeMap', () => {
   it('should support nested merges with promises', (done: MochaDone) => {
 
     // Added as a failing test when investigating:
-    // https://github.com/ReactiveX/rxjs/issues/4071
+    // https://github.com/zlq4863947/rxjs-cn//issues/4071
 
     const results: (number | string)[] = [];
 
@@ -800,7 +800,7 @@ describe('mergeMap', () => {
   it('should support wrapped sources', (done: MochaDone) => {
 
     // Added as a failing test when investigating:
-    // https://github.com/ReactiveX/rxjs/issues/4095
+    // https://github.com/zlq4863947/rxjs-cn//issues/4095
 
     const results: (number | string)[] = [];
 

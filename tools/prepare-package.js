@@ -15,7 +15,7 @@ const TYPE_ROOT = ROOT + 'types/';
 const UMD_PKG = ROOT + 'bundles/';
 
 // License info for minified files
-let licenseUrl = 'https://github.com/ReactiveX/RxJS/blob/master/LICENSE.txt';
+let licenseUrl = 'https://github.com/zlq4863947/rxjs-cn//blob/master/LICENSE.txt';
 let license = 'Apache License 2.0 ' + licenseUrl;
 
 // Execute build optimizer transforms on ESM5 files

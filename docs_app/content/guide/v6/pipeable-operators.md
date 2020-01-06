@@ -1,48 +1,47 @@
-# Pipeable Operators
+# 管道操作符(Pipeable Operators)
 
-Starting in version 5.5 we have shipped "pipeable operators", which can be accessed in `rxjs/operators` (notice the pluralized "operators"). These are meant to be a better approach for pulling in just the operators you need than the "patch" operators found in `rxjs-compat` package.
+从5.5版开始，我们提供了"管道操作符"，可以在`rxjs/operators`中访问（注意复数的"operators"）。与`rxjs-compat`包中的"patch" 操作符相比，这是一种更好的方法，只引入所需的操作符。
 
-**NOTE**: Using `rxjs` or `rxjs/operators` without making changes to your build process can result in larger bundles. See [Known Issues](#known-issues) section below.
+**注意**：使用`rxjs`或`rxjs/operators`而不更改您的构建过程可能会导致更大的捆绑包。请参阅下面的[已知问题](#known-issues)部分。
 
-**Renamed Operators**
+**重命名的操作符**
 
-Due to having operators available independent of an Observable, operator names cannot conflict with JavaScript keyword restrictions. Therefore the names of the pipeable version of some operators have changed. These operators are:
+由于有独立于可观察对象的可用操作符，操作符名称不能与JavaScript关键字限制冲突。因此，某些操作符的管道版本名称已更改。这些操作符是：
 
 1. `do` -> `tap`
 2. `catch` -> `catchError`
 3. `switch` -> `switchAll`
 4. `finally` -> `finalize`
 
-The `let` operator is now part of `Observable` as `pipe` and cannot be imported.
+`let`操作符现在以改为 `Observable`的`pipe`，因此无法导入。
 
 `source$.let(myOperator) -> source$.pipe(myOperator)`
 
-See "[Build Your Own Operators](#build-your-own-operators-easily)" below.
+请参见下面的"[构建自己的操作符](#轻松建立自己的操作符)"。
 
-The former `toPromise()` "operator" has been removed
-because an operator returns an `Observable`,
-not a `Promise`.
-There is now an `Observable.toPromise()`instance method.
+先前的`toPromise()`“操作符”已被删除
+因为操作符返回的是一个`Observable`，而不是一个`Promise`。
+现在有一个`Observable.toPromise()`实例方法代替。
 
-## Why?
+## 为什么?
 
-Problems with the patched operators for dot-chaining are:
+用于链式操作的修补操作符有以下问题：
 
-1. Any library that imports a patch operator will augment the `Observable.prototype` for all consumers of that library, creating blind dependencies. If the library removes their usage, they unknowingly break everyone else. With pipeables, you have to import the operators you need into each file you use them in.
+1. 任何导入修补操作符的库都将为该库的所有使用者增加`Observable.prototype`，从而产生盲目依赖。如果库取消了它们的使用，它们将在不知不觉中破坏其他所有。对于管道，必须将所需的操作符导入使用它们的每个文件中。
 
-2. Operators patched directly onto the prototype are not ["tree-shakeable"](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking) by tools like rollup or webpack. Pipeable operators will be as they are just functions pulled in from modules directly.
+2. 直接修补到原型上的操作符没有诸如rollup或webpack之类的工具的[["Tree-Shaking"](https://developer.mozilla.org/zh-CN/docs/Glossary/Tree_shaking)功能。可管道操作符就像是直接从模块中引入的函数一样。
 
-3. Unused operators that are being imported in apps cannot be detected reliably by any sort of build tool or lint rule. That means that you might import `scan`, but stop using it, and it's still being added to your output bundle. With pipeable operators, if you're not using it, a lint rule can pick it up for you.
+3. 任何类型的生成工具或lint规则都无法可靠地检测正在应用程序中导入的未使用的修补操作符。这意味着您可以导入`scan`，但停止使用它，它仍将添加到输出包中。使用管道操作符时，如果它未被使用，则可以通过lint规则为您找到它。
 
-4. Functional composition is awesome. Building your own custom operators becomes much easier, and now they work and look just like all other operators in rxjs. You don't need to extend Observable or override `lift` anymore.
+4. 功能的构建是令人惊叹的。使您建立自己的自定义操作符变得更加容易，现在它们运行起来，就像rxjs中的所有其他操作符一样。您不再需要扩展`Observable`或覆盖`lift`了。
 
-## What?
+## 是什么?
 
-What is a pipeable operator? Simply put, a function that can be used with the current `let` operator. It used to be the origin of the name ("lettable"), but that was confusing so we now call them "pipeable" because they're intended to be used with the `pipe` utility. A pipeable operator is basically any function that returns a function with the signature: `<T, R>(source: Observable<T>) => Observable<R>`.
+管道操作符是什么？ 简而言之，该函数可以与当前的`let`运算符一起使用。它曾经是名称（'lettable'）的由来，但这令人困惑，因此我们现在将它们称为"pipeable"，因为它们旨在与`pipe`一起使用。管道操作符基本上是任何返回带有签名的函数的函数：`<T, R>(source: Observable<T>) => Observable<R>`。
 
-There is a `pipe` method built into `Observable` now at `Observable.prototype.pipe` that сan be used to compose the operators in similar manner to what you're used to with dot-chaining (shown below).
+现在，在`Observable.prototype.pipe`中的`Observable`中内置了`pipe`方法，可以用来组合操作符，其方式与您使用链式操作时所用的方式相似（如下所示）。
 
-There is also a `pipe` utility function that can be imported from `import { pipe } from 'rxjs';`. The `pipe` function can be used to build reusable pipeable operators from other pipeable operators. For example:
+还有一个`pipe`工具函数，可以从`import { pipe } from 'rxjs';`中导入。`pipe`函数可用于从其他管道操作符生成可重用的管道运算符。例如：
 
 ```ts
 import { pipe } from 'rxjs';
@@ -51,9 +50,9 @@ import { map } from 'rxjs/operators';
 const mapTwice = <T,R>(fn: (value: T, index: number) => R) => pipe(map(fn), map(fn));
 ```
 
-## Usage
+## 使用
 
-You pull in any operator you need from one spot, under `'rxjs/operators'` (**plural!**). It's also recommended to pull in the Observable creation methods you need directly as shown below with `range`:
+您可以从`'rxjs/operators'`（**复数！**）下的任意位置导出所需的任何操作符。还建议使用`range`直接引入所需的Observable创建方法，如下所示：
 
 ```ts
 import { range } from 'rxjs';
@@ -76,16 +75,16 @@ source$.pipe(
 // 40
 ```
 
-## Build Your Own Operators Easily
+## 轻松建立自己的操作符
 
-You, in fact, could _always_ do this with `let`... but building your own operator is now as simple as writing a function. Notice, that you can compose your custom operator in with other rxjs operators seamlessly.
+实际上，您可以经常用`let` ...来做到这一点，但是，现在构建自己的操作符就像编写函数一样简单。请注意，您可以将自定义操作符与其他rxjs操作算符无缝组合在一起。
 
 ```ts
 import { Observable, interval } from 'rxjs';
 import { filter, map, take, toArray } from 'rxjs/operators';
 
 /**
- * an operator that takes every Nth value
+ * 一个取第N个值的的操作符
  */
 const takeEveryNth = (n: number) => <T>(source: Observable<T>) =>
   new Observable<T>(observer => {
@@ -100,13 +99,13 @@ const takeEveryNth = (n: number) => <T>(source: Observable<T>) =>
   });
 
 /**
- * You can also use an existing operator like so
+ * 您也可以像这样使用现有的操作符
  */
 const takeEveryNthSimple = (n: number) => <T>(source: Observable<T>) =>
   source.pipe(filter((value, index) => index % n === 0 ))
 
 /**
- * And since pipeable operators return functions, you can further simplify like so
+ * 由于管道操作符返回函数，因此您可以像这样进一步简化
  */
 const takeEveryNthSimplest = (n: number) => filter((value, index) => index % n === 0);
 
@@ -124,12 +123,12 @@ interval(1000).pipe(
 // [0, 2304, 9216]
 ```
 
-## Known Issues
+## 已知的问题
 
 ### TypeScript < 2.4
-In TypeScript 2.3 and lower, typings will need to be added to functions passed to operators, as types cannot be inferred prior to TypeScript 2.4. In TypeScript 2.4, types will infer via composition properly.
+在TypeScript 2.3及更低版本中，由于无法在TypeScript 2.4之前推断类型，因此需要将类型添加到传递给操作符的函数中。在TypeScript 2.4中，类型将通过组合正确推断。
 
-**TS 2.3 and under**
+**TS 2.3及以下版本**
 
 ```ts
 range(0, 10).pipe(
@@ -138,7 +137,7 @@ range(0, 10).pipe(
 ).subscribe(x => console.log(x))
 ```
 
-**TS 2.4 and up**
+**TS 2.4及以上版本**
 
 ```ts
 range(0, 10).pipe(
@@ -147,21 +146,21 @@ range(0, 10).pipe(
 ).subscribe(x => console.log(x))
 ```
 
-### Build and Treeshaking
+### 构建和Treeshaking
 
-When importing from a manifest (or re-export) file, an application bundle can sometimes grow. Pipeable operators can now be imported from `rxjs/operators`, but doing so without changing your build process will often result in a larger application bundle. This is because by default `rxjs/operators` will resolve to the CommonJS output of rxjs.
+从清单文件（或重新导出）导入时，应用程序捆绑有时可能会增长。 现在可从`rxjs/operators`中导入管道操作符，但如果不更改构建过程，则通常会导致应用程序包变大。这是因为默认情况下，`rxjs/operators`将解析为rxjs的CommonJS输出。
 
-In order to use the new pipeable operators and not gain bundle size, you will need to change your Webpack configuration. This will only work with Webpack 3+ as it relies on the new `ModuleConcatenationPlugin` from Webpack 3.
+为了使用新的管道操作符而不增加捆绑包的大小，您将需要更改Webpack配置。这仅适用于Webpack 3+，因为它依赖于Webpack 3中的新模块`ModuleConcatenationPlugin`。
 
 **path-mapping**
 
-Published along with rxjs 5.5 is builds of rxjs in ECMAScript Module format (imports and exports) with both ES5 and ES2015 language level. You can find these distributions in `node_modules/rxjs/_esm5` and `node_modules/rxjs/_esm2015` ("esm" stands for ECMAScript Modules and the number "5" or "2015" is for the ES language level). In your application source code, you should import from `rxjs/operators`, but in your Webpack configuration file you will need to re-map imports to the ESM5 (or ESM2015) version.
+与RxJS5.5一起发布的是使用ES5和ES2015语言级别的ECMAScript模块格式（导入和导出）构建的rxjs。您可以在`node_modules/rxjs/_esm5`和`node_modules/rxjs/_esm2015`中找到这些发行版（“esm”代表ECMAScript模块，数字“5”或“2015”代表ES语言级别）。在应用程序源代码中，应该从`rxjs/operators`导入，但在Webpack配置文件中，需要将导入重新映射到ESM5（或ESM5010）版本。
 
-If you `require('rxjs/_esm5/path-mapping')`, you will receive a function that returns an object of key-value pairs mapping each input to it's file location on disk. Utilize this mapping as follows:
+如果您使用`require('rxjs/_esm5/path-mapping')`，将收到一个函数，该函数返回一个键值对对象，将每个输入映射到其在磁盘上的文件位置。使用此映射，如下所示：
 
 **webpack.config.js**
 
-Simple configuration:
+配置简单：
 
 <!-- skip-example -->
 ```js
@@ -173,7 +172,7 @@ module.exports = {
   entry: 'index.js',
   output: 'bundle.js',
   resolve: {
-    // Use the "alias" key to resolve to an ESM distribution
+    // 使用"alias"键解析为ESM发行版
     alias: rxPaths()
   },
   plugins: [
@@ -182,7 +181,7 @@ module.exports = {
 };
 ```
 
-More complete configuration (closer to a real-world scenario):
+更完整的配置（更接近实际场景）：
 
 <!-- skip-example -->
 ```js

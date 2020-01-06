@@ -1,5 +1,5 @@
 <h1 class="mat-heading" tabindex="0">
-  Operator Decision Tree
+  操作符决策树
 </h1>
 <ng-container *ngIf="!(hasError$ | async); else hasErrorTemplate">
   <h2 class="mat-subheading-2" tabindex="0">
@@ -7,23 +7,23 @@
   </h2>
   <ng-container *ngIf="isBeyondInitialQuestion$ | async">
     <section>
-      <button 
+      <button
         (click)="back()"
         mat-button
         class="back"
-      >Back</button>
-      <button 
+      >返回</button>
+      <button
         (click)="startOver()"
         mat-button
         color="warn"
         class="start-over"
-      >Start Over</button>
+      >重新开始</button>
     </section>
   </ng-container>
   <div>
     <ng-container *ngFor="let option of options$ | async">
       <ng-container *ngIf="option.options; else operatorTempalte">
-        <button 
+        <button
           class="option mat-body-1"
           (click)="selectOption(option.id, $event)"
           [@flyIn]
@@ -35,12 +35,12 @@
       </ng-container>
       <ng-template #operatorTempalte>
         <p *ngIf="option.method" class="mat-body-1">
-          You want the {{option.method}} of the {{option.docType}} 
+          您想要的是 {{option.docType}} 的 {{option.method}}
           <a href="{{option.path}}#{{option.method}}">{{option.label}}</a>.
         </p>
         <p *ngIf="!option.method" class="mat-body-1">
-          You want the {{option.docType}} 
-          <a href="{{option.path}}">{{option.label}}</a>.
+          您想要的是 {{option.docType}}
+          <a href="{{option.path}}">{{option.label}}</a>。
         </p>
       </ng-template>
     </ng-container>
@@ -49,7 +49,7 @@
 
 <ng-template #hasErrorTemplate>
   <div class="mat-body-1 error">
-    <p>Oops! There was an issue loading the decision tree.. we're real sorry about that. Please try reloading the page.</p>
-    <p>You can also try <a href="https://github.com/ReactiveX/rxjs/issues/new?template=documentation.md" target="_blank">submitting an issue on Github</a>.</p>
+    <p>哎呀！加载决策树时出现问题...我们真的很抱歉。请尝试重新加载页面。</p>
+    <p>您还可以尝试 <a href="https://github.com/zlq4863947/rxjs-cn//issues/new?template=documentation.md" target="_blank">在Github上提交问题</a>.</p>
   </div>
 </ng-template>

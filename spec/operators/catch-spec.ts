@@ -372,7 +372,7 @@ describe('catchError operator', () => {
   });
 
   it('should catch errors throw from within the constructor', () => {
-    // See https://github.com/ReactiveX/rxjs/issues/3740
+    // See https://github.com/zlq4863947/rxjs-cn//issues/3740
     testScheduler.run(({ expectObservable }) => {
       const source = concat(
         new Observable<string>(o => {
@@ -430,7 +430,7 @@ describe('catchError operator', () => {
     });
   });
 
-  // TODO(v8): see https://github.com/ReactiveX/rxjs/issues/5115
+  // TODO(v8): see https://github.com/zlq4863947/rxjs-cn//issues/5115
   // The re-implementation in version 8 should fix the problem in the
   // referenced issue. Closed subscribers should remain closed.
   /*

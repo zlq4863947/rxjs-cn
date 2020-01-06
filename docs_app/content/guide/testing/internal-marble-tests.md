@@ -1,10 +1,10 @@
-# Writing Marble Tests
+# 编写弹珠测试
 
 <div class="alert is-critical">
   <span>
-    This document refers to the writing marble tests for the <b>RxJS repo internals</b> and is intended for anyone wishing to help maintain the RxJS repo. 
-    <b>Users of RxJS</b> should instead view the <a href="./guide/testing/marble-testing">guide for writing marbles tests for applications</a>. 
-    The major difference is that the behavior of the TestScheduler differs between manual usage and using the `testScheduler.run(callback)` helper.
+    本文档涉及为<b>RxJS资源库内部组件</b>编写弹珠测试，适用于希望帮助维护RxJS资源库的任何人。
+    <b>相反，RxJS的用户</b>应该查看<a href="./guide/testing/marble-testing">为应用程序编写弹珠测试的指南。</a>
+    主要区别在于，TestScheduler的行为在手动使用和使用`testScheduler.run(callback)`帮助程序之间有所不同。
   </span>
 </div>
 

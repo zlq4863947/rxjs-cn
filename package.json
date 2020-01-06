@@ -48,7 +48,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/reactivex/rxjs.git"
+    "url": "https://github.com/zlq4863947/rxjs-cn/.git"
   },
   "keywords": [
     "Rx",
@@ -91,9 +91,9 @@
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ReactiveX/RxJS/issues"
+    "url": "https://github.com/zlq4863947/rxjs-cn//issues"
   },
-  "homepage": "https://github.com/ReactiveX/RxJS",
+  "homepage": "https://github.com/zlq4863947/rxjs-cn/",
   "dependencies": {
     "tslib": "^1.9.0"
   },

@@ -35,7 +35,7 @@ Contents
 ## Submitting a Pull Request (PR)
 Before you submit your Pull Request (PR) consider the following guidelines:
 
-* Search [GitHub](https://github.com/ReactiveX/RxJS/pulls) for an open or closed PR
+* Search [GitHub](https://github.com/zlq4863947/rxjs-cn//pulls) for an open or closed PR
   that relates to your submission. You don't want to duplicate effort.
 * Make your changes in a new git branch:
 
@@ -176,7 +176,7 @@ that create a lot of child subscriptions or operators that emit new objects like
 macro performance tests for.
 
 Other scenarios for macro performance testing may include common end-to-end scenarios from real-world apps. If you have a situation in your
-app where you feel RxJS is performing poorly, please [submit an issue](https://github.com/ReactiveX/rxjs/issues/) and include a minimal code example showing
+app where you feel RxJS is performing poorly, please [submit an issue](https://github.com/zlq4863947/rxjs-cn//issues/) and include a minimal code example showing
 your performance issues. We would love to solve perf for your real-world problems and add those tests to our perf test battery.
 
 Macro performance tests can be run by hosting the root directory with any web server (we use [http-server](https://www.npmjs.com/package/http-server)),

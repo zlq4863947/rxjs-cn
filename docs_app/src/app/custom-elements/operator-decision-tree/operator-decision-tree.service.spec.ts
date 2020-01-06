@@ -31,7 +31,7 @@ describe('OperatorDecisionTreeService', () => {
   });
 
   describe('currentSentence$', () => {
-    const initialSetence = 'Start by choosing an option from the list below.';
+    const initialSetence = '从下面的列表中选择一个选项开始。';
 
     beforeEach(() => {
       dataServiceStub.getDecisionTree$.and.returnValue(

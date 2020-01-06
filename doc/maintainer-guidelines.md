@@ -1,6 +1,6 @@
 # Maintainer Guidelines
 
-These are guidelines for maintainers of this repository as (mostly) [gifted to us by](https://github.com/ReactiveX/RxJS/issues/121#issue-97747542)
+These are guidelines for maintainers of this repository as (mostly) [gifted to us by](https://github.com/zlq4863947/rxjs-cn//issues/121#issue-97747542)
 His Beardliness, @jeffbcross. They are words to live by for those that are tasked with reviewing and merging pull requests and otherwise
 shepherding the community. As the roster of trusted maintainers grows, we'll expect these guidelines to stay pretty
 much the same (but suggestions are always welcome).

@@ -71,25 +71,25 @@
       "tooltip": "RxJS参考"
     },
     {
-      "tooltip": "Operator Decision Tree",
+      "tooltip": "操作符决策树",
       "url": "operator-decision-tree",
-      "title": "Operator Decision Tree"
+      "title": "操作符决策树"
     },
     {
-      "title": "About Version 6",
+      "title": "关于版本6",
       "children": [
         {
           "url": "guide/v6/migration",
-          "title": "Migration"
+          "title": "迁移"
         },
         {
           "url": "guide/v6/pipeable-operators",
-          "title": "Pipeable Operators"
+          "title": "管道操作符(Pipeable Operators)"
         },
         {
           "url": "api/deprecations",
-          "title": "Deprecations",
-          "tooltip": "List of Deprecations"
+          "title": "弃用",
+          "tooltip": "弃用列表"
         }
       ]
     },

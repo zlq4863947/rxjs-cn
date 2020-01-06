@@ -15,7 +15,7 @@ export class OperatorDecisionTreeService {
   private tree$: Observable<
     OperatorDecisionTree
   > = this.dataService.getDecisionTree$().pipe(
-    catchError(error => of(error)), // This helps if the JSON for some reason fails to get fetched
+    catchError(error => of(error)), // 如果出于某种原因无法获取JSON，这将有所帮助
     shareReplay()
   );
 
@@ -26,7 +26,7 @@ export class OperatorDecisionTreeService {
     filter(([tree]) => treeIsErrorFree(tree)),
     map(([tree, { previousBranchIds }]) =>
       isInitialDecision(previousBranchIds)
-        ? 'Start by choosing an option from the list below.'
+        ? '从下面的列表中选择一个选项开始。'
         : `${previousBranchIds
             .map(entityId => {
               return tree[entityId].label;

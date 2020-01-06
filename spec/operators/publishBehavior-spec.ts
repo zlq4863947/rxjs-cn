@@ -358,7 +358,7 @@ describe('publishBehavior operator', () => {
   type('should infer the type for the pipeable operator', () => {
     /* tslint:disable:no-unused-variable */
     const source = of(1, 2, 3);
-    // TODO: https://github.com/ReactiveX/rxjs/issues/2972
+    // TODO: https://github.com/zlq4863947/rxjs-cn//issues/2972
     const result: ConnectableObservable<number> = publishBehavior(0)(source);
     /* tslint:enable:no-unused-variable */
   });

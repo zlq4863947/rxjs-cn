@@ -1,226 +1,226 @@
-- label: 'I have one existing Observable, and'
+- label: '我有一个可观察对象'
   children:
-    - label: I want to change each emitted value
+    - label: 我想更改每个发出的值
       children:
-        - label: to be a constant value
+        - label: 更改为常量
           children:
             - label: mapTo
-        - label: to be a value calculated through a formula
+        - label: 通过公式计算得出的值
           children:
             - label: map
-    - label: I want to pick a property off each emitted value
+    - label: 我想从每个发射值中选择一个属性
       children:
         - label: pluck
-    - label: I want to spy the values being emitted without affecting them
+    - label: 我想监视发射的值而不影响它们
       children:
         - label: tap
-    - label: I want to allow some values to pass
+    - label: 我想只允许传递某些值
       children:
-        - label: based on custom logic
+        - label: 基于自定义逻辑
           children:
             - label: filter
-        - label: if they are at the start of the Observable
+        - label: 如果它们在可观察对象的开始
           children:
-            - label: and only the first value
+            - label: 只有第一个值
               children:
                 - label: first
-            - label: based on a given amount
+            - label: 基于指定的数量
               children:
                 - label: take
-            - label: based on custom logic
+            - label: 基于自定义逻辑
               children:
                 - label: takeWhile
-        - label: if they are exactly the n-th emission
+        - label: 如果它们恰好是第n个发射
           children:
             - label: elementAt
-        - label: if they are at the end of the Observable
+        - label: 如果它们在可观察对象的末尾
           children:
-            - label: and only the last value
+            - label: 只有最后一个值
               children:
                 - label: last
-            - label: based on a given amount
+            - label: 基于指定的数量
               children:
                 - label: takeLast
-        - label: until another Observable emits a value
+        - label: 直到另一个可观察对象发出一个值
           children:
             - label: takeUntil
-    - label: I want to ignore values
+    - label: 我想忽略某些值
       children:
-        - label: altogether
+        - label: 全部值
           children:
             - label: ignoreElements
-        - label: from the start of the Observable
+        - label: 从可观察对象的开始
           children:
-            - label: based on a given amount
+            - label: 基于指定的数量
               children:
                 - label: skip
-            - label: based on custom logic
+            - label: 基于自定义逻辑
               children:
                 - label: skipWhile
-        - label: from the end of the Observable
+        - label: 从可观察对象的结尾
           children:
             - label: skipLast
-        - label: until another Observable emits a value
+        - label: 直到另一个可观察对象发出一个值
           children:
             - label: skipUntil
-        - label: that match some previous value
+        - label: 与以前的值匹配
           children:
-            - label: according to value equality
+            - label: 基于值相等
               children:
-                - label: emitted just before the current value
+                - label: 在当前值发出之前
                   children:
                     - label: distinctUntilChanged
-                - label: emitted some time in the past
+                - label: 在过去的一段时间里
                   children:
                     - label: distinct
-            - label: according to a key or object property
+            - label: 根据key或对象属性
               children:
-                - label: emitted just before the current value
+                - label: 在当前值发出之前
                   children:
                     - label: distinctUntilKeyChanged
-        - label: that occur too frequently
+        - label: 发生得太频繁
           children:
-            - label: by emitting the first value in each time window
+            - label: 通过在每个时间窗口中发出第一个值
               children:
-                - label: where time windows are determined by another Observable's emissions
+                - label: 时间窗口由另一个可观察对象的发射确定
                   children:
                     - label: throttle
-                - label: where time windows are determined by a time duration
+                - label: 时间窗口由持续时间确定
                   children:
                     - label: throttleTime
-            - label: by emitting the last value in each time window
+            - label: 通过在每个时间窗口中发出最后一个值
               children:
-                - label: where time windows are determined by another Observable's emissions
+                - label: 时间窗口由另一个可观察对象的发射确定
                   children:
                     - label: audit
-                - label: where time windows are determined by a time duration
+                - label: 时间窗口由持续时间确定
                   children:
                     - label: auditTime
-            - label: by emitting the last value as soon as enough silence has occured
+            - label: 在一段静默时间后立即发出最后一个值
               children:
-                - label: where the silence duration threshold is determined by another Observable
+                - label: 静默持续时间阈值由另一个可观察对象确定
                   children:
                     - label: debounce
-                - label: where the silence duration threshold is determined by a time duration
+                - label: 静默持续时间阈值由持续时间确定
                   children:
                     - label: debounceTime
-    - label: I want to compute a formula using all values emitted
+    - label: 我想使用发出的所有值来计算公式
       children:
-        - label: and only output the final computed value
+        - label: 只输出最终的计算值
           children:
             - label: reduce
-        - label: and output the computed values when the source emits a value
+        - label: 并在源发出值时输出计算值
           children:
             - label: scan
-        - label: and output the computed values as a nested Observable when the source emits a value
+        - label: 并在源发出值时将计算的值输出为嵌套的可观察对象
           children:
             - label: mergeScan
-    - label: I want to wrap its messages with metadata
+    - label: 我想用元数据包装它的消息
       children:
-        - label: that describes each notification (next, error, or complete)
+        - label: 描述每个通知（next，error或complete）
           children:
             - label: materialize
-        - label: that includes the time past since the last emitted value
+        - label: 包含自上次发出值以来的时间
           children:
             - label: timeInterval
-    - label: after a period of inactivity
+    - label: 一段时间不活动后
       children:
-        - label: I want to throw an error
+        - label: 我想抛出一个错误
           children:
             - label: timeout
-        - label: I want to switch to another Observable
+        - label: 我想切换到另一个可观察对象
           children:
             - label: timeoutWith
-    - label: I want to ensure there is only one value
+    - label: 我想确保只有一个值
       children:
         - label: single
-    - label: I want to know how many values it emits
+    - label: 我想知道它发出了多少个值
       children:
         - label: count
-    - label: I want to prepend one value
+    - label: 我想添加一个值
       children:
         - label: startWith
-    - label: I want to delay the emissions
+    - label: 我想延迟发射
       children:
-        - label: based on a given amount of time
+        - label: 基于指定的时间
           children:
             - label: delay
-        - label: based on the emissions of another Observable
+        - label: 根据另一个可观察对象的发射
           children:
             - label: delayWhen
-    - label: I want to group the values
+    - label: 我想将值分组
       children:
-        - label: until the Observable completes
+        - label: 直到可观察对象完成
           children:
-            - label: and convert to an array
+            - label: 并转换为数组
               children:
                 - label: toArray
-            - label: and convert to a Promise
+            - label: 并转换成一个Promise
               children:
                 - label: Observable
                   method: toPromise
-        - label: consecutively in pairs, as arrays
+        - label: 将当前值和前一个值作为数组放在一起
           children:
             - label: pairwise
-        - label: 'based on a criterion, and output two Observables: those that match the criterion and those that do not'
+        - label: '基于一个标准，并输出两个可观察对象：符合标准的和不符合标准的'
           children:
             - label: partition
-        - label: in batches of a particular size
+        - label: 按指定大小分组
           children:
-            - label: and emit the group as an array
+            - label: 并将分组作为数组发出
               children:
                 - label: bufferCount
-            - label: and emit the group as a nested Observable
+            - label: 并将分组作为嵌套的可观察对象发出
               children:
                 - label: windowCount
-        - label: based on time
+        - label: 基于时间
           children:
-            - label: and emit the group as an array
+            - label: 并将分组作为数组发出
               children:
                 - label: bufferTime
-            - label: and emit the group as a nested Observable
+            - label: 并将分组作为嵌套的可观察对象发出
               children:
                 - label: windowTime
-        - label: until another Observable emits
+        - label: 直到另一个可观察对象发出
           children:
-            - label: and emit the group as an array
+            - label: 并将分组作为数组发出
               children:
                 - label: buffer
-            - label: and emit the group as a nested Observable
+            - label: 并将分组作为嵌套的可观察对象发出
               children:
                 - label: window
-        - label: based on the emissions of an Observable created on-demand
+        - label: 基于按需创建的可观察对象发出
           children:
-            - label: and emit the group as an array
+            - label: 并将分组作为数组发出
               children:
                 - label: bufferWhen
-            - label: and emit the group as a nested Observable
+            - label: 并将分组作为嵌套的可观察对象发出
               children:
                 - label: windowWhen
-        - label: based on another Observable for opening a group, and an Observable for closing a group
+        - label: 基于另一个用于打开分组的可观察对象，以及用于关闭分组的可观察对象
           children:
-            - label: and emit the group as an array
+            - label: 并将分组作为数组发出
               children:
                 - label: bufferToggle
-            - label: and emit the group as a nested Observable
+            - label: 并将分组作为嵌套的可观察对象发出
               children:
                 - label: windowToggle
-        - label: based on a key calculated from the emitted values
+        - label: 基于根据发射值计算出的key
           children:
             - label: groupBy
-    - label: I want to start a new Observable for each value
+    - label: 我想为每个值启动一个新的可观察对象
       children:
-        - label: and emit the values from all nested Observables in parallel
+        - label: 并从所有嵌套的可观察对象并行发出值
           children:
-            - label: where the nested Observable is the same for every value
+            - label: 其中嵌套的可观测对象对于每个值都是相同的
               children:
                 - label: mergeMapTo
-            - label: where the nested Observable is calculated for each value
+            - label: 为每个值计算嵌套的可观察对象
               children:
                 - label: mergeMap
-        - label: and emit the values from each nested Observable in order
+        - label: 并按顺序从每个嵌套的可观察对象发出值
           children:
-            - label: where the nested Observable is the same for every value
+            - label: 其中嵌套的可观察对象对于每个值都是相同的
               children:
                 - label: concatMapTo
             - label: where the nested Observable is calculated for each value

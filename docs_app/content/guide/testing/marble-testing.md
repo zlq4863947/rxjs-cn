@@ -60,53 +60,53 @@ testScheduler.run(helpers => {
 
 在 TestScheduler 的上下文中，弹珠图是一个字符串，其中包含表示虚拟时间发生的事件的特殊语法。 时间按*帧*前进。任何弹珠字符串的第一个字符始终代表*零帧*或时间的开始。 在`testScheduler.run(callback)`内部，frameTimeFactor 设置为 1，这意味着一帧等于一个虚拟毫秒。
 
-一帧表示多少个虚拟毫秒取决于`TestScheduler.frameTimeFactor的值`。由于历史原因，仅当您运行 testScheduler.run(callback)回调中的代码时，`frameTimeFactor`的值为 1。 外部设置为 10。在以后的 RxJS 版本中可能会更改，因此始终为 1。
+一帧表示多少个虚拟毫秒取决于`TestScheduler.frameTimeFactor的值`。由于历史原因，仅当您运行 `testScheduler.run(callback)`回调中的代码时，`frameTimeFactor`的值为 1。 外部设置为 10。在以后的 RxJS 版本中可能会更改，因此始终为 1。
 
-> IMPORTANT: 重要说明：本语法指南涉及使用新的`testScheduler.run(callback)`时弹珠图的用法。当手动使用 TestScheduler 时，弹珠图的语义是不同的，并且不支持某些功能，例如 new time progression 语法。
+> IMPORTANT: 重要说明：本语法指南涉及使用`testScheduler.run(callback)`时弹珠图的用法。当手动使用 TestScheduler 时，弹珠图的语义是不同的，并且不支持某些功能，例如 new time progression 语法。
 
 - `' '` 空白：水平空白将被忽略，可用于帮助垂直对齐多个弹珠图。
 - `'-'` 帧：虚拟时间传递的 1 个"帧"（请参见帧的上述说明）。
-- `[0-9]+[ms|s|m]` time progression: the time progression syntax lets you progress virtual time by a specific amount. It's a number, followed by a time unit of `ms` (milliseconds), `s` (seconds), or `m` (minutes) without any space between them, e.g. `a 10ms b`. See [Time progression syntax](#time-progression-syntax) for more details.
-- `'|'` complete: The successful completion of an observable. This is the observable producer signaling `complete()`.
-- `'#'` error: An error terminating the observable. This is the observable producer signaling `error()`.
-- `[a-z0-9]` e.g. `'a'` any alphanumeric character: Represents a value being emitted by the producer signaling `next()`. Also consider that you could map this into an object or an array like this:
+- `[0-9]+[ms|s|m]` 时间推进：时间推进语法允许您使用指定数量的推进虚拟时间。它是一个数字，后跟时间单位`ms`（毫秒）、`s`（秒）或 `m`（分钟），它们之间没有任何间隔，例如：`a 10ms b`。有关详细信息，请参见[时间推进语法](#time-progression-syntax)。
+- `'|'` 完成：成功地完成一个可观察的事物。这是可观察对象发送的信号`complete()`。
+- `'#'` 错误：终止可观察对象值的错误。这是可观察对象发送的信号`error()`。
+- `[a-z0-9]` 例如： `'a'` 是任何字母数字字符：表示生产者发送的`next()`信号时发出的值。还可以考虑将其映射到如下对象或数组：
 
 ```ts
 const expected = "400ms (a-b|)";
 const values = {
-  a: "value emitted",
-  b: "another value emitter"
+  a: "发出的值",
+  b: "另一个发射器的值"
 };
 
 expectObservable(someStreamForTesting).toBe(expected, values);
-// This would work also
+// 也可以这样
 const expected = "400ms (0-1|)";
-const values = ["value emitted", "another value emitted"];
+const values = ["发出的值", "另一个发射器的值"];
 
 expectObservable(someStreamForTesting).toBe(expected, values);
 ```
 
-- `'()'` sync groupings: When multiple events need to be in the same frame synchronously, parentheses are used to group those events. You can group next'd values, a completion, or an error in this manner. The position of the initial `(` determines the time at which its values are emitted. While it can be unintuitive at first, after all the values have synchronously emitted time will progress a number of frames equal to the number of ASCII characters in the group, including the parentheses. e.g. `'(abc)'` will emit the values of a, b, and c synchronously in the same frame and then advance virtual time by 5 frames, `'(abc)'.length === 5`. This is done because it often helps you vertically align your marble diagrams, but it's a known pain point in real-world testing. [Learn more about known issues](#known-issues).
-- `'^'` subscription point: (hot observables only) shows the point at which the tested observables will be subscribed to the hot observable. This is the "zero frame" for that observable, every frame before the `^` will be negative. Negative time might seem pointless, but there are in fact advanced cases where this is necessary, usually involving ReplaySubjects.
+- `'()'` 同步分组：当多个事件需要同步在同一帧中时，使用括号将这些事件分组。您可以通过这种方式将`next`的值，完成或错误分组。初始位置（决定了其值发出的时间。起初它并不直观，但是在所有值同步发出之后，时间将经过的帧数等于该组中ASCII字符的数量，包括括号，例如：'(abc)' 将在同一帧中同步发出a，b和c的值，然后将虚拟时间推进5帧，即'(abc)'。length === 5。它通常可以帮助您垂直对齐弹珠图，但在实际测试中，这是一个已知的痛点。了解有关已知问题的[更多信息](#known-issues)。
+- `'^'` 订阅点：（仅限热可观察对象）显示测试可观测值订阅热可观测值的点。这是观察到的"零帧"，在^之前的每一帧都是负数。负数的时间可能看起来毫无意义，但事实上，在一些复杂的情况下，这是必要的，通常涉及到ReplaySubjects。
 
-### Time progression syntax
+### 时间推进语法
 
-The new time progression syntax takes inspiration from the CSS duration syntax. It's a number (int or float) immediately followed by a unit; ms (milliseconds), s (seconds), m (minutes). e.g. `100ms`, `1.4s`, `5.25m`.
+新的时间推进语法从CSS duration语法中获得灵感。它是一个数字（int或float），紧接着是一个单位；ms（毫秒）、s（秒）、m（分钟）。例如 `100ms`、`1.4s`、`5.25m`。
 
-When it's not the first character of the diagram it must be padded a space before/after to disambiguate it from a series of marbles. e.g. `a 1ms b` needs the spaces because `a1msb` will be interpreted as `['a', '1', 'm', 's', 'b']` where each of these characters is a value that will be next()'d as-is.
+当它不是图的第一个字符时，必须在它之前/之后填充一个空格，以便从一系列弹珠中区分它。例如：`a1msb` 需要空格，因为`a1msb`将被解释为`['a', '1', 'm', 's', 'b']，其中每个字符都是一个next()的值。
 
-**NOTE**: You may have to subtract 1 millisecond from the time you want to progress because the alphanumeric marbles (representing an actual emitted value) _advance time 1 virtual frame_ themselves already, after they emit. This can be very unintuitive and frustrating, but for now it is indeed correct.
+**注意**：您可能需要从要进行的时间中减去1毫秒，因为字母数字弹珠（表示实际发射的值）在发射后已经_推进了一个虚拟时间帧_。这可能是非常不直观和令人沮丧的，但现在它确实是正确的。
 
 ```ts
 const input = " -a-b-c|";
 const expected = "-- 9ms a 9ms b 9ms (c|)";
 /*
 
-// Depending on your personal preferences you could also
-// use frame dashes to keep vertical aligment with the input
+// 根据您的个人喜好，您还可以
+// 使用破折号使输入保持垂直对齐
 const input = ' -a-b-c|';
 const expected = '------- 4ms a 9ms b 9ms (c|)';
-// or
+// 或
 const expected = '-----------a 9ms b 9ms (c|)';
 
 */
@@ -116,54 +116,54 @@ const result = cold(input).pipe(concatMap(d => of(d).pipe(delay(10))));
 expectObservable(result).toBe(expected);
 ```
 
-### Examples
+### 示例
 
-`'-'` or `'------'`: Equivalent to `never()`, or an observable that never emits or completes
+`'-'` 或 `'------'`: 等同于`never()`，或者是一个从不发射或完成的可观察对象
 
-`|`: Equivalent to `empty()`
+`|`: 等同于 `empty()`
 
-`#`: Equivalent to `throwError()`
+`#`: 等同于 `throwError()`
 
-`'--a--'`: An observable that waits 2 "frames", emits value `a` and then never completes.
+`'--a--'`: 等待2个"帧"的可观察对象，发出值`a`，然后永远不发出`complete`。
 
-`'--a--b--|'`: On frame 2 emit `a`, on frame 5 emit `b`, and on frame 8, `complete`
+`'--a--b--|'`: 在第2帧发出`a`，在第5帧发出`b`，在第8帧发出`complete`。
 
-`'--a--b--#'`: On frame 2 emit `a`, on frame 5 emit `b`, and on frame 8, `error`
+`'--a--b--#'`: 在第2帧发出`a`，在第5帧发出`b`，在第8帧发出`error`。
 
-`'-a-^-b--|'`: In a hot observable, on frame -2 emit `a`, then on frame 2 emit `b`, and on frame 5, `complete`.
+`'-a-^-b--|'`: 在一个热可观察对象中，在第-2帧上发出 `a`，然后在第2帧上发出 `b`，在第5帧上发出`complete`。
 
-`'--(abc)-|'`: on frame 2 emit `a`, `b`, and `c`, then on frame 8 `complete`
+`'--(abc)-|'`: 在第2帧同时发出`a`、 `b`、 和 `c`，在第8帧发出`complete`。
 
-`'-----(a|)'`: on frame 5 emit `a` and `complete`.
+`'-----(a|)'`: 在第5帧同时发出`a` 和 `complete`。
 
-`'a 9ms b 9s c|'`: on frame 0 emit `a`, on frame 10 emit `b`, on frame 10,012 emit `c`, then on on frame 10,013 `complete`.
+`'a 9ms b 9s c|'`: 在第0帧上发出 `a`，在第10帧上发出 `b`，在第10,012帧上发出 `c`，然后在第10,013帧上发出`complete`。
 
-`'--a 2.5m b'`: on frame 2 emit `a`, on frame 150,003 emit `b` and never complete.
+`'--a 2.5m b'`: 在第2帧上发出`a`，在第150,003帧上发出`b`且永远不发出`complete`。
 
-## Subscription Marbles
+## 订阅弹珠
 
-The `expectSubscriptions` helper allows you to assert that a `cold()` or `hot()` Observable you created was subscribed/unsubscribed to at the correct point in time. The `subscriptionMarbles` parameter to `expectObservable` allows your test to defer subscription to a later virtual time, and/or unsubscribe even if the observable being tested has not yet completed.
+`expectSubscriptions`帮助函数允许您断言您创建的 `cold()` 或 `hot()`可观察对象是在正确的时间点订阅/取消订阅的。`expectobservate`的`subscriptionMarbles`参数允许测试将订阅推迟到以后的虚拟时间，和（或）取消订阅，即使正在测试的可观察对象尚未完成。
 
-The subscription marble syntax is slightly different to conventional marble syntax.
+订阅弹珠语法与普通弹珠语法略有不同。
 
-- `'-'` time: 1 frame time passing.
-- `[0-9]+[ms|s|m]` time progression: the time progression syntax lets you progress virtual time by a specific amount. It's a number, followed by a time unit of `ms` (milliseconds), `s` (seconds), or `m` (minutes) without any space between them, e.g. `a 10ms b`. See [Time progression syntax](#time-progression-syntax) for more details.
-- `'^'` subscription point: shows the point in time at which a subscription happen.
-- `'!'` unsubscription point: shows the point in time at which a subscription is unsubscribed.
+- `'-'` 时间：经过1帧时间。
+- `[0-9]+[ms|s|m]` 时间推进：时间推进语法允许您使用指定数量的推进虚拟时间。它是一个数字，后跟时间单位`ms`（毫秒）、`s`（秒）或 `m`（分钟），它们之间没有任何间隔，例如：`a 10ms b`。有关详细信息，请参见[时间推进语法](#time-progression-syntax)。
+- `'^'` 订阅点：显示订阅发生的时间点。
+- `'!'` 取消订阅点：显示取消订阅的时间点。
 
-There should be **at most one** `^` point in a subscription marble diagram, and **at most one** `!` point. Other than that, the `-` character is the only one allowed in a subscription marble diagram.
+订制弹珠图中**最多**有一个`^`点，**最多**有一个`!`点。除此之外，`-`字符是订阅弹珠图中唯一允许的字符。
 
-### Examples
+### 例子
 
-`'-'` or `'------'`: no subscription ever happened.
+`'-'` 或 `'------'`: 没有订阅发生。
 
-`'--^--'`: a subscription happened after 2 "frames" of time passed, and the subscription was not unsubscribed.
+`'--^--'`: 在第2帧发生订阅，并且该订阅并未取消订阅。
 
-`'--^--!-'`: on frame 2 a subscription happened, and on frame 5 was unsubscribed.
+`'--^--!-'`: 在第2帧发生订阅，而在第5帧取消订阅。
 
-`'500ms ^ 1s !'`: on frame 500 a subscription happened, and on frame 1,501 was unsubscribed.
+`'500ms ^ 1s !'`: 在第500帧发生了订阅，而在第1,501帧未进行订阅。
 
-Given a hot source, test multiple subscribers that subscribe at different times:
+指定热源，测试多个在不同时间订阅的订阅者：
 
 ```js
 testScheduler.run(({ hot, expectObservable }) => {
@@ -177,7 +177,7 @@ testScheduler.run(({ hot, expectObservable }) => {
 });
 ```
 
-Manually unsubscribe from a source that will never complete:
+手动取消想要将永远无法完成：
 
 ```js
 it("should repeat forever", () => {
@@ -186,7 +186,7 @@ it("should repeat forever", () => {
   scheduler.run(({ expectObservable }) => {
     const foreverStream$ = interval(1).pipe(mapTo("a"));
 
-    // Omitting this arg may crash the test suite.
+    // 忽略此参数可能会使测试套件崩溃。
     const unsub = "------ !";
 
     expectObservable(foreverStream$, unsub).toBe("-aaaaa");
@@ -196,17 +196,17 @@ it("should repeat forever", () => {
 
 ---
 
-## Known Issues
+## 已知的问题
 
-### You can't directly test RxJS code that consumes Promises or uses any of the other schedulers (e.g. AsapScheduler)
+### 您无法直接测试使用Promise或使用其他任何调度器的RxJS代码（例如AsapScheduler）
 
-If you have RxJS code that uses any other form of async scheduling other than AsyncScheduler, e.g. Promises, AsapScheduler, etc. you can't reliably use marble diagrams _for that particular code_. This is because those other scheduling methods won't be virtualized or known to TestScheduler.
+如果您有使用AsyncScheduler以外的其他任何形式的异步调度的RxJS代码，例如 Promise、AsapScheduler等，对于该特定代码，您不能可靠地使用弹珠图。这是因为TestScheduler不会虚拟化或知道其他那些调度方法。
 
-The solution is to test that code in isolation, with the traditional async testing methods of your testing framework. The specifics depend on your testing framework of choice, but here's a pseudo-code example:
+解决方案是使用测试框架的普通异步测试方法来隔离测试该代码。具体细节取决于您选择的测试框架，但这是一个伪代码示例：
 
 ```ts
-// Some RxJS code that also consumes a Promise, so TestScheduler won't be able
-// to correctly virtualize and the test will always be really async
+// 一些RxJS代码也会使用Promise，因此TestScheduler将无法
+// 为了正确地虚拟化，测试将始终是异步的
 const myAsyncCode = () => from(Promise.resolve("something"));
 
 it("has async code", done => {
@@ -217,18 +217,18 @@ it("has async code", done => {
 });
 ```
 
-On a related note, you also can't currently assert delays of zero, even with AsyncScheduler, e.g. `delay(0)` is like saying `setTimeout(work, 0)`. This schedules a new ["task" aka "macrotask"](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/), so it's async, but without an explicit passage of time.
+与此相关的是，即使使用AsyncScheduler，您目前也无法断言零延迟。例如，`delay(0)`就像说`setTimeout(work, 0)`。这会调度一个新的["task"的 macrotask”](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)，因此它是异步的，但没有明确的时间流逝。
 
-### Behavior is different outside of `testScheduler.run(callback)`
+### `testScheduler.run(callback)`之外的不同行为
 
-The TestScheduler has been around since v5, but was actually intended for testing RxJS itself by the maintainers, rather than for use in regular user apps. Because of this, some of the default behaviors and features of the TestScheduler didn't work well (or at all) for users. In v6 we introduced the `testScheduler.run(callback)` method which allowed us to provide new defaults and features in a non-breaking way, but it's still possible to [use the TestScheduler outside](./guide/testing/internal-marble-tests) of `testScheduler.run(callback)`. It's important to note that if you do so, there are some major differences in how it will behave.
+TestScheduler从v5开始就存在了，但实际上是由维护人员测试RxJS本身，而不是为普通用户用于应用程序中。正因为如此，TestScheduler的某些默认行为和功能无法正常运行（或根本无法运行）。在v6中，我们引入了`testScheduler.run(callback)`方法，该方法允许我们以非中断的方式提供新的默认值和特性，但是仍然可以[在外部使用TestScheduler](./guide/testing/internal-marble-tests)。重要的是要注意，如果你这样做，它的行为会有一些重大的差异。
 
-- TestScheduler helper methods have more verbose names, like `testScheduler.createColdObservable()` instead of `cold()`
-- The testScheduler instance is NOT automatically be used by operators that uses AsyncScheduler, e.g. delay, debounceTime, etc so you have to explicitly pass it to them.
-- There is NO support for time progression syntax e.g. `-a 100ms b-|`
-- 1 frame is 10 virtual milliseconds by default. i.e. `TestScheduler.frameTimeFactor = 10`
-- Each space `` equals 1 frame, same as a hyphen `-`.
-- There is a hard maximum number of frames set at 750 i.e. `maxFrames = 750`. After 750 they are silently ignored.
-- You must explicitly flush the scheduler
+- TestScheduler辅助方法具有更详细的名称，如`testScheduler.createColdObservable()`而不是`cold()`。
+- 使用AsyncScheduler的操作符不会自动使用testScheduler实例，例如：delay，debounceTime等，因此您必须将其明确地传递给他们。
+- 不支持时间推进语法，例如 `-a 100ms b- |`
+- 默认情况下，一帧是10个虚拟毫秒。 即`TestScheduler.frameTimeFactor = 10`
+- 每个空格``等于1帧，与连字符 `-` 相同。
+- 最大帧数设置为750，即`maxFrames = 750`。 750之后，它们将被静默忽略。
+- 您必须显式刷新调度器。
 
-While at this time usage of the TestScheduler outside of `testScheduler.run(callback)` has not been officially deprecated, it is discouraged because it is likely to cause confusion.
+虽然目前还没有正式反对使用 `testScheduler.run(callback)` 之外的TestScheduler，但不鼓励使用它，因为它可能会引起混乱。

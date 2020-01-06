@@ -79,7 +79,7 @@ it('should infer correctly with 5 Observable, concurrent, and scheduler param', 
 });
 
 // TODO: Fix this when the both merge operator and merge creator function has been fix
-// see: https://github.com/ReactiveX/rxjs/pull/4371#issuecomment-441124096
+// see: https://github.com/zlq4863947/rxjs-cn//pull/4371#issuecomment-441124096
 // Comment is about combineLater, but, it's the same problem to fix
 // it('should infer correctly with array param', () => {
 //   const res = of(1, 2, 3);

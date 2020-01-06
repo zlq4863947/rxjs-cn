@@ -8,7 +8,7 @@
 
 # RxJS 7 (alpha)
 
-### FOR 6.X PLEASE GO TO [THE 6.x BRANCH](https://github.com/ReactiveX/rxjs/tree/6.x)
+### FOR 6.X PLEASE GO TO [THE 6.x BRANCH](https://github.com/zlq4863947/rxjs-cn//tree/6.x)
 
 Reactive Extensions Library for JavaScript. This is a rewrite of [Reactive-Extensions/RxJS](https://github.com/Reactive-Extensions/RxJS) and is the latest production-ready version of RxJS. This rewrite is meant to have better performance, better modularity, better debuggable call stacks, while staying mostly backwards compatible, with some breaking changes that reduce the API surface.
 
@@ -22,8 +22,8 @@ Reactive Extensions Library for JavaScript. This is a rewrite of [Reactive-Exten
 
 ## Versions In This Repository
 
-- [master](https://github.com/ReactiveX/rxjs/commits/master) - This is all of the current, unreleased work, which is against v7 of RxJS right now
-- [stable](https://github.com/ReactiveX/rxjs/tree/6.x) - This is the branch for the latest version you'd get if you do `npm install rxjs`
+- [master](https://github.com/zlq4863947/rxjs-cn//commits/master) - This is all of the current, unreleased work, which is against v7 of RxJS right now
+- [stable](https://github.com/zlq4863947/rxjs-cn//tree/6.x) - This is the branch for the latest version you'd get if you do `npm install rxjs`
 
 Most PRs should be made to **master**.
 

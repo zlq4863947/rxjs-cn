@@ -102,7 +102,7 @@ describe('combineLatest', () => {
     });
 
     // TODO: Fix this when the both combineLatest operator and combineLatest creator function has been fix
-    // see: https://github.com/ReactiveX/rxjs/pull/4371#issuecomment-441124096
+    // see: https://github.com/zlq4863947/rxjs-cn//pull/4371#issuecomment-441124096
     // it('should infer correctly with array param', () => {
     //   const a = of(1, 2, 3);
     //   const b = [of('a', 'b', 'c')];

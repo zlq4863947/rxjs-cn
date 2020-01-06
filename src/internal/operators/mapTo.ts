@@ -4,20 +4,16 @@ import { Observable } from '../Observable';
 import { OperatorFunction } from '../types';
 
 /**
- * Emits the given constant value on the output Observable every time the source
- * Observable emits a value.
+ * 每次源可观察对象发出值时，将值映射成常量。
  *
- * <span class="informal">Like {@link map}, but it maps every source value to
- * the same output value every time.</span>
+ * <span class="informal">类似 {@link map}, 但每次都会将每个源值映射为相同的输出值。</span>
  *
  * ![](mapTo.png)
  *
- * Takes a constant `value` as argument, and emits that whenever the source
- * Observable emits a value. In other words, ignores the actual source value,
- * and simply uses the emission moment to know when to emit the given `value`.
+ * 以常量`值`作为参数，并在源可观测对象发出值时映射为此常量。也就是说，忽略实际的源值，只使用发射时机来发射指定的`值`。
  *
  * ## Example
- * Map every click to the string 'Hi'
+ * 将每次点击都映射为字符串“ Hi”
  * ```ts
  * import { fromEvent } from 'rxjs';
  * import { mapTo } from 'rxjs/operators';
@@ -29,9 +25,8 @@ import { OperatorFunction } from '../types';
  *
  * @see {@link map}
  *
- * @param {any} value The value to map each source value to.
- * @return {Observable} An Observable that emits the given `value` every time
- * the source Observable emits something.
+ * @param {any} value 将每个源值映射成常量。
+ * @return {Observable} 每次源可观察对象发出值时，都会映射成`指定的值`。
  * @method mapTo
  * @owner Observable
  */

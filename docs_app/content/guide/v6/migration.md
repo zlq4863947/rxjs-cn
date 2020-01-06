@@ -1,4 +1,4 @@
-# RxJS v5.x to v6 Update Guide
+# RxJS v5.x升级到v6的更新指南
 
 RxJS v6 has arrived! While this is a major version change (from 5.x to 6.x), 
 we've put in a lot of work to keep the hard breaking changes to a minimum. 
@@ -175,15 +175,15 @@ import { TestScheduler } from 'rxjs/testing';
 
 ### Operator pipe syntax
 
-The previous coding style of chaining operators has been replaced by piping the result of one operator to another. Pipeable operators were added in version 5.5. For a full discussion of the reasoning and changes required for pipeable operators, see [RxJS documentation](https://github.com/ReactiveX/rxjs/blob/91088dae1df097be2370c73300ffa11b27fd0100/doc/pipeable-operators.md). 
+The previous coding style of chaining operators has been replaced by piping the result of one operator to another. Pipeable operators were added in version 5.5. For a full discussion of the reasoning and changes required for pipeable operators, see [RxJS documentation](https://github.com/zlq4863947/rxjs-cn//blob/91088dae1df097be2370c73300ffa11b27fd0100/doc/pipeable-operators.md). 
 
 Before you can remove the compatibility layer, you must refactor your code to use only pipeable operators. For Typescript, the `tslint` tool automates the process to some extent, by applying the transform to well-typed code.
 
-* See [Operator Pipe Syntax](#pipe-syntax) for details of how to refactor using [rxjs-tslint](https://github.com/reactivex/rxjs-tslint).
+* See [Operator Pipe Syntax](#pipe-syntax) for details of how to refactor using [rxjs-tslint](https://github.com/zlq4863947/rxjs-cn/-tslint).
 
 ### Observable classes
 
-All observable classes ([https://github.com/ReactiveX/rxjs/tree/5.5.8/src/observable](https://github.com/ReactiveX/rxjs/tree/5.5.8/src/observable)) have been removed from v6, in favor of existing or new operators that perform the same operations as the class methods. For example, `ArrayObservable.create(myArray)` can be replaced by `from(myArray)`, or the new operator `fromArray()`.
+All observable classes ([https://github.com/zlq4863947/rxjs-cn//tree/5.5.8/src/observable](https://github.com/zlq4863947/rxjs-cn//tree/5.5.8/src/observable)) have been removed from v6, in favor of existing or new operators that perform the same operations as the class methods. For example, `ArrayObservable.create(myArray)` can be replaced by `from(myArray)`, or the new operator `fromArray()`.
 
 * `ConnectableObservable` is hidden from direct use in v6 and is accessible only through operators `multicast`, `publish`, `publishReplay`, and `publishLast`.
 
@@ -301,7 +301,7 @@ See [Result Selector Migration](#result-selectors) for details of which operator
 Before RxJS releases v7, you will need to remove and replace all use of deprecated functionality. The following areas contain deprecated functionality:
 
 * `Observable.if`  and `Observable.throw`
- These methods have been replaced by the static `iif()` and `throwError()` functions. Use [rxjs-tslint](https://github.com/reactivex/rxjs-tslint) to convert method calls with function calls. 
+ These methods have been replaced by the static `iif()` and `throwError()` functions. Use [rxjs-tslint](https://github.com/zlq4863947/rxjs-cn/-tslint) to convert method calls with function calls. 
  
  See [Convert deprecated methods](#dep-methods) for details.
 

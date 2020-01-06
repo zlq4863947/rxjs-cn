@@ -9,6 +9,6 @@ We primarily use GitHub as an issue tracker; for usage and support questions, pl
 ---
 * StackOverflow: https://stackoverflow.com/questions/tagged/rxjs using the tag `rxjs`
 * Also have a look at the readme for more information, possibly can have some answers already:
-- https://github.com/ReactiveX/rxjs/blob/master/README.md
-- https://github.com/ReactiveX/rxjs/blob/master/MIGRATION.md
-- https://github.com/ReactiveX/rxjs/blob/master/doc/pipeable-operators.md
+- https://github.com/zlq4863947/rxjs-cn//blob/master/README.md
+- https://github.com/zlq4863947/rxjs-cn//blob/master/MIGRATION.md
+- https://github.com/zlq4863947/rxjs-cn//blob/master/doc/pipeable-operators.md

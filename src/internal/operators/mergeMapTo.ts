@@ -9,20 +9,17 @@ export function mergeMapTo<T, R, O extends ObservableInput<any>>(innerObservable
 /* tslint:enable:max-line-length */
 
 /**
- * Projects each source value to the same Observable which is merged multiple
- * times in the output Observable.
+ * 将每个源值映射到同一个可观察对象中，并将其在输出的可观察对象中多次合并。
  *
- * <span class="informal">It's like {@link mergeMap}, but maps each value always
- * to the same inner Observable.</span>
+ * <span class="informal">类似 {@link mergeMap}, 但会将每个值映射到相同的内部可观察对象。</span>
  *
  * ![](mergeMapTo.png)
  *
- * Maps each source value to the given Observable `innerObservable` regardless
- * of the source value, and then merges those resulting Observables into one
- * single Observable, which is the output Observable.
+ * 不管源值如何，都将每个源值映射到指定的<b>可观察对象</b>的<b>内部可观察对象</b>，
+ * 然后将结果<b>可观察对象</b>合并为一个<b>可观察对象</b>，即输出的<b>可观察对象</b>。
  *
  * ## Example
- * For each click event, start an interval Observable ticking every 1 second
+ * 以点击事件为源，之后每隔1秒启动一个内部可观察对象
  * ```ts
  * import { fromEvent, interval } from 'rxjs';
  * import { mergeMapTo } from 'rxjs/operators';
@@ -39,12 +36,10 @@ export function mergeMapTo<T, R, O extends ObservableInput<any>>(innerObservable
  * @see {@link mergeScan}
  * @see {@link switchMapTo}
  *
- * @param {ObservableInput} innerObservable An Observable to replace each value from
- * the source Observable.
- * @param {number} [concurrent=Number.POSITIVE_INFINITY] Maximum number of input
- * Observables being subscribed to concurrently.
- * @return {Observable} An Observable that emits items from the given
- * `innerObservable`
+ * @param innerObservable 从源可观察对象中替换每个值的可观察对象
+ * @param resultSelector
+ * @param {number} [concurrent=Number.POSITIVE_INFINITY] 可同时订阅的输入可观察对象的最大数。
+ * @return {Observable} 从指定的<b>内部可观察对象</b>中发发出值的<b>可观察对象</b>
  * @method mergeMapTo
  * @owner Observable
  */
