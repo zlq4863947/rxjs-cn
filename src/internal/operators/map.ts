@@ -4,21 +4,17 @@ import { Observable } from '../Observable';
 import { OperatorFunction } from '../types';
 
 /**
- * Applies a given `project` function to each value emitted by the source
- * Observable, and emits the resulting values as an Observable.
+ * 对源可观察对象发出的每个都调用指定的`project`函数，并发出结果。
  *
- * <span class="informal">Like [Array.prototype.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map),
- * it passes each source value through a transformation function to get
- * corresponding output values.</span>
+ * <span class="informal">类似 [Array.prototype.map()](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map)。
+ * 通过将每个源值传递给转换函数以获得输出值。</span>
  *
  * ![](map.png)
  *
- * Similar to the well known `Array.prototype.map` function, this operator
- * applies a projection to each value and emits that projection in the output
- * Observable.
+ * 与众所周知的`Array.prototype.map`函数类似，此操作符将映射应用于每个值，并在输出可观察对象中发出该映射。
  *
  * ## Example
- * Map every click to the clientX position of that click
+ * 将每次点击映射到点击时的clientX位置
  * ```ts
  * import { fromEvent } from 'rxjs';
  * import { map } from 'rxjs/operators';
@@ -31,14 +27,10 @@ import { OperatorFunction } from '../types';
  * @see {@link mapTo}
  * @see {@link pluck}
  *
- * @param {function(value: T, index: number): R} project The function to apply
- * to each `value` emitted by the source Observable. The `index` parameter is
- * the number `i` for the i-th emission that has happened since the
- * subscription, starting from the number `0`.
- * @param {any} [thisArg] An optional argument to define what `this` is in the
- * `project` function.
- * @return {Observable<R>} An Observable that emits the values from the source
- * Observable transformed by the given `project` function.
+ * @param {function(value: T, index: number): R} project 函数作用于源可观察对象的每个`值`。
+ * `index`参数是自订阅以来发生的第i次发射的数字`i`，从数字`0`开始。
+ * @param {any} [thisArg] 可选参数，用于设置`project`函数中的`this`。
+ * @return {Observable<R>} 可观察对象，它从指定的`project`函数转换源可观察对象后发出值。
  * @method map
  * @owner Observable
  */

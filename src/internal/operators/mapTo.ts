@@ -13,7 +13,7 @@ import { OperatorFunction } from '../types';
  * 以常量`值`作为参数，并在源可观测对象发出值时映射为此常量。也就是说，忽略实际的源值，只使用发射时机来发射指定的`值`。
  *
  * ## Example
- * 将每次点击都映射为字符串“ Hi”
+ * 将每次点击都映射为字符串“Hi”
  * ```ts
  * import { fromEvent } from 'rxjs';
  * import { mapTo } from 'rxjs/operators';

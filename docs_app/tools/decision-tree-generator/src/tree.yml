@@ -1,11 +1,11 @@
-- label: '我有一个可观察对象'
+- label: '有一个可观察对象'
   children:
-    - label: 我想更改每个发出的值
+    - label: 想更改每个发出的值
       children:
         - label: 更改为常量
           children:
             - label: mapTo
-        - label: 通过公式计算得出的值
+        - label: 通过公式计算得出值
           children:
             - label: map
     - label: 我想从每个发射值中选择一个属性
